@@ -1,0 +1,7 @@
+# Build output
+/dist
+/ghostchar
+# Project
+/.claude
+/.specify
+/specs

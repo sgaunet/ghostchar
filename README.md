@@ -228,7 +228,6 @@ ghostchar:
 - UTF-16 / Latin-1 support with automatic encoding detection
 - Homoglyph / confusable character detection ([UAX #39](https://unicode.org/reports/tr39/))
 - `.ghostignore` config file for per-repo allowlists
-- VSCode extension
 
 ## License
 

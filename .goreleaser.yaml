@@ -1,0 +1,44 @@
+version: 2
+
+builds:
+  - env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    ignore:
+      - goos: windows
+        goarch: arm64
+    ldflags:
+      - -s -w
+      - -X github.com/sgaunet/ghostchar/cmd.version={{.Version}}
+      - -X github.com/sgaunet/ghostchar/cmd.commit={{.Commit}}
+      - -X github.com/sgaunet/ghostchar/cmd.date={{.Date}}
+
+archives:
+  - format: tar.gz
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    format_overrides:
+      - goos: windows
+        format: zip
+
+checksum:
+  name_template: "checksums.txt"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+
+brews:
+  - repository:
+      owner: sgaunet
+      name: tap
+    homepage: "https://github.com/sgaunet/ghostchar"
+    description: "Detect invisible Unicode, PUA, and bidi characters in source files"
