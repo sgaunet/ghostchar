@@ -1,0 +1,13 @@
+.git/
+.github/
+.claude/
+.specify/
+dist/
+Dockerfile*
+.dockerignore
+*.log*
+.env*
+coverage/
+specs/
+README.md
+/testdata
