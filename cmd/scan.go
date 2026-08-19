@@ -84,7 +84,6 @@ func runScan(cmd *cobra.Command, args []string) error {
 				categories = append(categories, charset.Category(cat))
 			case "all":
 				categories = nil
-				break
 			default:
 				return fmt.Errorf("invalid category %q: must be invisible, pua, bidi, or all", cat)
 			}

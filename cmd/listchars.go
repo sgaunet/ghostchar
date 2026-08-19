@@ -39,18 +39,17 @@ func runListChars(cmd *cobra.Command, args []string) error {
 
 	w := tabwriter.NewWriter(os.Stdout, 0, 4, 2, ' ', 0)
 	for _, cat := range categories {
-		fmt.Fprintf(w, "\n[%s]\n", cat)
-		fmt.Fprintf(w, "Codepoint\tName\n")
-		fmt.Fprintf(w, "---------\t----\n")
+		_, _ = fmt.Fprintf(w, "\n[%s]\n", cat)
+		_, _ = fmt.Fprintf(w, "Codepoint\tName\n")
+		_, _ = fmt.Fprintf(w, "---------\t----\n")
 		defs := charset.CharDefsByCategory(cat)
 		for _, d := range defs {
 			if d.IsSingle() {
-				fmt.Fprintf(w, "U+%04X\t%s\n", d.Low, d.Name)
+				_, _ = fmt.Fprintf(w, "U+%04X\t%s\n", d.Low, d.Name)
 			} else {
-				fmt.Fprintf(w, "U+%04X..U+%04X\t%s\n", d.Low, d.High, d.Name)
+				_, _ = fmt.Fprintf(w, "U+%04X..U+%04X\t%s\n", d.Low, d.High, d.Name)
 			}
 		}
 	}
-	w.Flush()
-	return nil
+	return w.Flush()
 }

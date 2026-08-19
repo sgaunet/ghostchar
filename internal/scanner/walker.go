@@ -139,10 +139,10 @@ func isBinary(path string) bool {
 	if err != nil {
 		return false
 	}
-	defer f.Close()
+	defer func() { _ = f.Close() }()
 
 	buf := make([]byte, 512)
-	n, err := f.Read(buf)
+	n, _ := f.Read(buf)
 	if n == 0 {
 		return false
 	}

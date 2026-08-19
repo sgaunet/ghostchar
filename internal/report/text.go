@@ -32,13 +32,13 @@ func colorForCategory(cat charset.Category) *color.Color {
 func FormatText(w io.Writer, result *scanner.ScanResult) {
 	for _, f := range result.Findings {
 		c := colorForCategory(f.Category)
-		fmt.Fprintf(w, "%s:%d:%d\t%s\t%s\t%s\n",
+		_, _ = fmt.Fprintf(w, "%s:%d:%d\t%s\t%s\t%s\n",
 			f.File, f.Line, f.Column,
 			c.Sprint(f.CodepointHex()), f.Name, c.Sprintf("[%s]", f.Category))
 	}
 	if len(result.Findings) > 0 {
-		fmt.Fprintln(w)
+		_, _ = fmt.Fprintln(w)
 	}
-	fmt.Fprintf(w, "%d findings in %d file(s) (%d files scanned)\n",
+	_, _ = fmt.Fprintf(w, "%d findings in %d file(s) (%d files scanned)\n",
 		result.TotalFindings, result.FilesWithFindings, result.FilesScanned)
 }

@@ -8,8 +8,12 @@ import (
 
 func TestWalkPaths_FiltersExtensions(t *testing.T) {
 	dir := t.TempDir()
-	os.WriteFile(filepath.Join(dir, "test.go"), []byte("package main\n"), 0o644)
-	os.WriteFile(filepath.Join(dir, "test.xyz"), []byte("ignored\n"), 0o644)
+	if err := os.WriteFile(filepath.Join(dir, "test.go"), []byte("package main\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(dir, "test.xyz"), []byte("ignored\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
 
 	files, err := WalkPaths([]string{dir}, map[string]bool{"go": true}, nil, 0)
 	if err != nil {
@@ -26,9 +30,15 @@ func TestWalkPaths_FiltersExtensions(t *testing.T) {
 func TestWalkPaths_ExcludesDirs(t *testing.T) {
 	dir := t.TempDir()
 	vendorDir := filepath.Join(dir, "vendor")
-	os.MkdirAll(vendorDir, 0o755)
-	os.WriteFile(filepath.Join(vendorDir, "lib.go"), []byte("package vendor\n"), 0o644)
-	os.WriteFile(filepath.Join(dir, "main.go"), []byte("package main\n"), 0o644)
+	if err := os.MkdirAll(vendorDir, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(vendorDir, "lib.go"), []byte("package vendor\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(dir, "main.go"), []byte("package main\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
 
 	files, err := WalkPaths([]string{dir}, nil, map[string]bool{"vendor": true}, 0)
 	if err != nil {
@@ -41,8 +51,12 @@ func TestWalkPaths_ExcludesDirs(t *testing.T) {
 
 func TestWalkPaths_SkipsBinary(t *testing.T) {
 	dir := t.TempDir()
-	os.WriteFile(filepath.Join(dir, "binary.go"), append([]byte("package main\n\x00binary data"), make([]byte, 100)...), 0o644)
-	os.WriteFile(filepath.Join(dir, "text.go"), []byte("package main\n"), 0o644)
+	if err := os.WriteFile(filepath.Join(dir, "binary.go"), append([]byte("package main\n\x00binary data"), make([]byte, 100)...), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(dir, "text.go"), []byte("package main\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
 
 	files, err := WalkPaths([]string{dir}, map[string]bool{"go": true}, nil, 0)
 	if err != nil {
@@ -55,8 +69,12 @@ func TestWalkPaths_SkipsBinary(t *testing.T) {
 
 func TestWalkPaths_MaxFileSize(t *testing.T) {
 	dir := t.TempDir()
-	os.WriteFile(filepath.Join(dir, "small.go"), []byte("package main\n"), 0o644)
-	os.WriteFile(filepath.Join(dir, "big.go"), make([]byte, 2000), 0o644)
+	if err := os.WriteFile(filepath.Join(dir, "small.go"), []byte("package main\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(dir, "big.go"), make([]byte, 2000), 0o644); err != nil {
+		t.Fatal(err)
+	}
 
 	files, err := WalkPaths([]string{dir}, map[string]bool{"go": true}, nil, 1000)
 	if err != nil {
@@ -70,7 +88,9 @@ func TestWalkPaths_MaxFileSize(t *testing.T) {
 func TestWalkPaths_SingleFile(t *testing.T) {
 	dir := t.TempDir()
 	path := filepath.Join(dir, "test.go")
-	os.WriteFile(path, []byte("package main\n"), 0o644)
+	if err := os.WriteFile(path, []byte("package main\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
 
 	files, err := WalkPaths([]string{path}, nil, nil, 0)
 	if err != nil {

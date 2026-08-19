@@ -13,7 +13,9 @@ func TestScanFile_Invisible(t *testing.T) {
 	dir := t.TempDir()
 	path := filepath.Join(dir, "test.go")
 	// "hello\u200bworld" on line 1
-	os.WriteFile(path, []byte("hello\xe2\x80\x8bworld\n"), 0o644)
+	if err := os.WriteFile(path, []byte("hello\xe2\x80\x8bworld\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
 
 	findings, err := ScanFile(path, "test.go", nil, nil)
 	if err != nil {
@@ -41,7 +43,9 @@ func TestScanFile_MultipleFindingsOneLine(t *testing.T) {
 	dir := t.TempDir()
 	path := filepath.Join(dir, "test.go")
 	// Two ZWSP characters: positions 1 and 5 (1-based byte offset)
-	os.WriteFile(path, []byte("\xe2\x80\x8babc\xe2\x80\x8b\n"), 0o644)
+	if err := os.WriteFile(path, []byte("\xe2\x80\x8babc\xe2\x80\x8b\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
 
 	findings, err := ScanFile(path, "test.go", nil, nil)
 	if err != nil {
@@ -62,7 +66,9 @@ func TestScanFile_CategoryFilter(t *testing.T) {
 	dir := t.TempDir()
 	path := filepath.Join(dir, "test.go")
 	// ZWSP (invisible) + RLO (bidi)
-	os.WriteFile(path, []byte("\xe2\x80\x8b\xe2\x80\xae\n"), 0o644)
+	if err := os.WriteFile(path, []byte("\xe2\x80\x8b\xe2\x80\xae\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
 
 	// Filter for bidi only
 	findings, err := ScanFile(path, "test.go", []charset.Category{charset.Bidi}, nil)
@@ -80,7 +86,9 @@ func TestScanFile_CategoryFilter(t *testing.T) {
 func TestScanFile_Clean(t *testing.T) {
 	dir := t.TempDir()
 	path := filepath.Join(dir, "clean.go")
-	os.WriteFile(path, []byte("package main\n\nfunc main() {}\n"), 0o644)
+	if err := os.WriteFile(path, []byte("package main\n\nfunc main() {}\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
 
 	findings, err := ScanFile(path, "clean.go", nil, nil)
 	if err != nil {
@@ -94,7 +102,9 @@ func TestScanFile_Clean(t *testing.T) {
 func TestScanFile_InvalidUTF8Warning(t *testing.T) {
 	dir := t.TempDir()
 	path := filepath.Join(dir, "test.go")
-	os.WriteFile(path, []byte("hello\x80world\n"), 0o644)
+	if err := os.WriteFile(path, []byte("hello\x80world\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
 
 	var warnings []string
 	warn := func(format string, args ...any) {
