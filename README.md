@@ -2,13 +2,17 @@
 
 CLI tool that detects invisible Unicode characters, Private Use Area (PUA) codepoints, and bidirectional control characters in source code files.
 
-Built for local development workflows, pre-commit hooks, and CI/CD pipelines. Ships as a single static binary with zero dependencies.
+Built for local development workflows, pre-commit hooks, and CI/CD pipelines. Ships as a single static binary with zero runtime dependencies.
 
 ## Why
 
 Invisible Unicode characters can hide in source code and cause subtle bugs, broken builds, or security vulnerabilities. Bidirectional control characters (U+202A–U+202E, U+2066–U+2069) are a known [supply-chain attack vector](https://trojansource.codes/) that can make code appear different from what compilers actually execute. `ghostchar` catches these before they reach production.
 
 ## Installation
+
+### Prerequisites
+
+- Go 1.25.4+ (only required when building from source)
 
 ### Homebrew
 
@@ -119,9 +123,10 @@ htm, css, scss, sql, tf, md, txt
 
 | Codepoint | Name |
 |-----------|------|
+| U+061C | Arabic Letter Mark |
+| U+200E–U+200F | Left-to-Right / Right-to-Left Marks |
 | U+202A–U+202E | LTR/RTL overrides and embeddings |
 | U+2066–U+2069 | Isolate and PDF controls |
-| U+200E–U+200F | LTR / RTL marks |
 
 Use `ghostchar list-chars` to print the full table at any time.
 
@@ -211,7 +216,10 @@ ghostchar:
 ```
 .
 ├── cmd/
-│   └── root.go         # cobra root + scan command
+│   ├── root.go         # cobra root command + default-subcommand routing
+│   ├── scan.go         # scan command (flags and execution)
+│   ├── listchars.go    # list-chars command
+│   └── version.go      # version command
 ├── internal/
 │   ├── scanner/        # file walking + character detection logic
 │   ├── report/         # output formatters (text, json, sarif)
