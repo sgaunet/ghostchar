@@ -20,11 +20,11 @@ builds:
       - -X github.com/sgaunet/ghostchar/cmd.date={{.Date}}
 
 archives:
-  - format: tar.gz
+  - formats: [tar.gz]
     name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
     format_overrides:
       - goos: windows
-        format: zip
+        formats: [zip]
 
 checksum:
   name_template: "checksums.txt"
@@ -36,9 +36,34 @@ changelog:
       - "^docs:"
       - "^test:"
 
-brews:
-  - repository:
+# Homebrew cask publishing (replaces the deprecated `brews:` block; casks are
+# what GoReleaser supports going forward)
+homebrew_casks:
+  - name: ghostchar
+    homepage: 'https://github.com/sgaunet/ghostchar'
+    description: 'Detect invisible Unicode, PUA, and bidi characters in source files'
+
+    # Tap repository directory (casks live in Casks/, not Formula/)
+    directory: Casks
+
+    # Command name users invoke, mapped from the artifact name.
+    binaries:
+      - ghostchar
+
+    # Strip the Gatekeeper quarantine xattr so the installed binary can run.
+    hooks:
+      post:
+        install: |
+          if OS.mac?
+            system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}"]
+          end
+
+    commit_author:
+      name: sgaunet
+      email: 1552102+sgaunet@users.noreply.github.com
+
+    repository:
       owner: sgaunet
-      name: tap
-    homepage: "https://github.com/sgaunet/ghostchar"
-    description: "Detect invisible Unicode, PUA, and bidi characters in source files"
+      name: homebrew-tools
+      # Token with 'repo' scope is required for pushing to a different repository
+      token: '{{ .Env.HOMEBREW_TAP_TOKEN }}'
